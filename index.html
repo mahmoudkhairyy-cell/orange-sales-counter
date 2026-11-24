@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#d85f00"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="مبيعات الفروع"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/app-icon.svg" type="image/svg+xml">
-<title>مبيعات الفروع اليومية</title>
+<meta name="theme-color" content="#d85f00"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Contract Follow-up"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/app-icon.svg" type="image/svg+xml">
+<title>Contract Follow-up</title>
 <style>
 :root{color-scheme:light;--orange:#f47700;--deep:#d85f00;--cream:#fff4e8;--ink:#242424;--muted:#737373;--line:#eee5dc;--bg:#fffaf5;--green:#16794a;--red:#b42318}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Tahoma,sans-serif;line-height:1.5}
@@ -78,10 +78,19 @@ input,select{border-radius:12px}
 #periodValues td{font-weight:700;padding:12px 8px}
 @media(max-width:520px){main{padding:15px 12px 38px}.card{padding:16px;border-radius:17px}.actions{display:grid;grid-template-columns:1fr;gap:9px}.row{gap:9px}}
 
-.type-entry{align-items:center;gap:12px}.type-entry>label{flex:0 0 92px;font-weight:800}.type-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}.type-inputs small{display:block;color:var(--muted);font-size:11px;font-weight:700;text-align:center;margin-bottom:3px}.type-inputs input{width:100%;text-align:center;font-size:17px;font-weight:800;padding:7px 5px;min-width:0}@media(max-width:380px){.type-entry>label{flex-basis:76px}.type-inputs{gap:5px}}</style>
+.type-entry{align-items:center;gap:12px}.type-entry>label{flex:0 0 92px;font-weight:800}.type-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}.type-inputs small{display:block;color:var(--muted);font-size:11px;font-weight:700;text-align:center;margin-bottom:3px}.type-inputs input{width:100%;text-align:center;font-size:17px;font-weight:800;padding:7px 5px;min-width:0}@media(max-width:380px){.type-entry>label{flex-basis:76px}.type-inputs{gap:5px}}
+.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 14px}
+.summary-card{min-width:0;background:linear-gradient(145deg,#fff8f0,#fff);border:1px solid #f0dfcc;border-radius:15px;padding:12px}
+.summary-card h3{font-size:13px;margin:0 0 9px;color:#8f4300}
+.summary-card .grid{gap:7px}
+.summary-card .metric{padding:9px 5px;background:#fff;border-radius:11px}
+.summary-card .metric strong{font-size:22px}
+.summary-card .metric span{font-size:11px}
+@media(max-width:380px){.summary-grid{gap:7px}.summary-card{padding:9px}.summary-card .metric strong{font-size:19px}}
+</style>
 </head>
 <body>
-<header><div><div class="brand">مبيعات الفروع اليومية</div><div class="subbrand">تسجيل المبيعات اليومية للفرع</div></div><span id="nav"></span><button id="installApp" class="install-app" type="button">تثبيت التطبيق</button></header>
+<header><div><div class="brand">Contract Follow-up</div><div class="subbrand">Branch Contract Tracking</div></div><span id="nav"></span><button id="installApp" class="install-app" type="button">تثبيت التطبيق</button></header>
 <main id="app"><div class="card">جاري التحميل...</div></main>
 <script>
 const SUPABASE_URL='https://fjhjqrgolqqtaokrlezd.supabase.co';
@@ -119,12 +128,14 @@ function renderBranchPicker(message=''){
 }
 async function loadBranches(){try{const list=await rpc('ac_list_branches');$('#branchSelect').innerHTML='<option value="">اختار الفرع</option>'+list.map(b=>`<option value="${esc(b.id)}" data-name="${esc(b.name)}" data-area="${esc(b.area)}">${esc(b.name)}</option>`).join('')}catch(e){showError('#pickError',e)}}
 function renderFields(values={}){$('#fields').innerHTML='<div class="notice">سجّل عدد المبيعات وعدد العقود لكل نوع بشكل مستقل.</div>'+TYPES.map(([k,label])=>'<div class="frow type-entry"><label>'+label+'</label><div class="type-inputs"><div><small>مبيعات</small><input id="v_'+k+'_sales_count" type="number" inputmode="numeric" min="0" max="100000" step="1" value="'+(Number(values[k+'_sales_count'])||0)+'" placeholder="0"></div><div><small>عقود</small><input id="v_'+k+'" type="number" inputmode="numeric" min="0" max="100000" step="1" value="'+(Number(values[k])||0)+'" placeholder="0"></div></div></div>').join('')+'<input id="v_sales_count" type="hidden" value="'+(Number(values.sales_count)||0)+'"><input id="v_contracts_count" type="hidden" value="'+(Number(values.contracts_count)||0)+'">';TYPES.forEach(([k])=>{ $('#v_'+k).addEventListener('input',calcTotal);$('#v_'+k+'_sales_count').addEventListener('input',calcTotal)})}
-function readFields(){const v={contracts_count:Math.max(0,Math.min(100000,Math.trunc(Number($('#v_contracts_count').value)||0))),sales_count:Math.max(0,Math.min(100000,Math.trunc(Number($('#v_sales_count').value)||0)))};TYPES.forEach(([k])=>{v[k]=Math.max(0,Math.min(100000,Math.trunc(Number($('#v_'+k).value)||0)));v[k+'_sales_count']=Math.max(0,Math.min(100000,Math.trunc(Number($('#v_'+k+'_sales_count').value)||0))) });return v}
-function calcTotal(){const el=$('#totalNow');if(el)el.textContent=total(readFields())}
+function readFields(){const v={};TYPES.forEach(([k])=>{v[k]=Math.max(0,Math.min(100000,Math.trunc(Number($('#v_'+k).value)||0)));v[k+'_sales_count']=Math.max(0,Math.min(100000,Math.trunc(Number($('#v_'+k+'_sales_count').value)||0)))});v.contracts_count=TYPES.reduce((n,[k])=>n+v[k],0);v.sales_count=TYPES.reduce((n,[k])=>n+v[k+'_sales_count'],0);return v}
+function calcTotal(){const el=$('#totalNow');if(el)el.textContent=total(readFields());updateSummaryCards()}
+function countFor(v,kind){const key=kind==='sales'?'sales_count':'contracts_count',suffix=kind==='sales'?'_sales_count':'';const calculated=TYPES.reduce((n,[k])=>n+(Number(v?.[k+suffix])||0),0);return calculated||Number(v?.[key])||0}
+function updateSummaryCards(){const host=$('#summaryCards');if(!host)return;const date=$('#entryDay').value||today(),day=Number(date.slice(8)),year=Number(date.slice(0,4)),month=Number(date.slice(5,7)),last=new Date(Date.UTC(year,month,0)).getUTCDate(),from=date.slice(0,8)+(day<=15?'01':'16'),to=date.slice(0,8)+(day<=15?'15':String(last).padStart(2,'0'));const current=readFields(),rows=branchDays.filter(r=>r.day>=from&&r.day<=to&&r.day!==date);const periodSales=rows.reduce((n,r)=>n+countFor(r.v,'sales'),countFor(current,'sales')),periodContracts=rows.reduce((n,r)=>n+countFor(r.v,'contracts'),countFor(current,'contracts'));host.innerHTML='<section class="summary-card"><h3>اللي بيتكتب النهارده</h3><div class="grid"><div class="metric"><strong>'+countFor(current,'sales')+'</strong><span>عدد المبيعات</span></div><div class="metric"><strong>'+countFor(current,'contracts')+'</strong><span>عدد العقود</span></div></div></section><section class="summary-card"><h3>اللي اتسجل في الفترة · '+(day<=15?'1–15':'16–'+last)+'</h3><div class="grid"><div class="metric"><strong>'+periodSales+'</strong><span>إجمالي المبيعات</span></div><div class="metric"><strong>'+periodContracts+'</strong><span>إجمالي العقود</span></div></div></section>'}
 function renderBranch(){
  if(!branch||!sessionStorage.getItem('ac_branch_pin'))return renderBranchPicker();
  const t=today();app.innerHTML=`<section class="card"><div class="row"><div><div class="muted">مساحة تسجيل الفرع</div><h2>${esc(branch.name)}</h2></div><span class="branch-lock">فرع مسجّل الدخول</span></div></section>
- <section class="card"><div class="field"><label for="entryDay">تاريخ التسجيل</label><input id="entryDay" type="date" value="${t}" min="${shift(t,-2)}" max="${t}"></div><div id="fields"></div>
+ <section class="card"><div class="field"><label for="entryDay">تاريخ التسجيل</label><input id="entryDay" type="date" value="${t}" min="${shift(t,-2)}" max="${t}"></div><div id="summaryCards" class="summary-grid"></div><div id="fields"></div>
  <div class="actions"><button id="saveDay">حفظ البيانات</button><button class="light" id="printContract">مشاركة كشف العقود كصورة A4</button></div><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
  `;
  $('#entryDay').onchange=()=>{fillDay()};
@@ -133,7 +144,7 @@ function renderBranch(){
 }
 let branchDays=[],closedPeriods=[];
 async function loadBranchDays(){try{const pin=sessionStorage.getItem('ac_branch_pin');const d=await rpc('ac_get_days',{p_branch:branch.id,p_pin:pin});branchDays=d.days||[];closedPeriods=d.closed||[];fillDay();}catch(e){showError('#saveError',e);if(e.message.includes('الرقم السري')){sessionStorage.removeItem('ac_branch_pin');renderBranchPicker(e.message)}}}
-function fillDay(){const d=branchDays.find(x=>x.day===$('#entryDay').value);renderFields(d?.v||{});$('#saveMessage').textContent=d?'توجد بيانات محفوظة لهذا اليوم ويمكن تعديلها':''}
+function fillDay(){const d=branchDays.find(x=>x.day===$('#entryDay').value);renderFields(d?.v||{});$('#saveMessage').textContent=d?'توجد بيانات محفوظة لهذا اليوم ويمكن تعديلها':'';updateSummaryCards()}
 
 function periodBounds(monthValue,half){const [y,m]=monthValue.split('-').map(Number),start=half==='first'?1:16,end=half==='first'?15:30;return {start:new Date(y,m-1,start),end:new Date(y,m-1,end),from:y+'-'+String(m).padStart(2,'0')+'-'+String(start).padStart(2,'0'),to:y+'-'+String(m).padStart(2,'0')+'-'+String(end).padStart(2,'0')}}
 async function printContractSheet(){
