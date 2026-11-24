@@ -2,117 +2,121 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff7900">
 <title>مبيعات الفروع اليومية</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,Tahoma,sans-serif;background:#f4f4f4;color:#111}
-header{background:#ff7900;color:#fff;padding:14px 16px;font-size:20px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
-header a{color:#fff;font-size:14px;font-weight:400;cursor:pointer;text-decoration:underline}
-main{max-width:640px;margin:0 auto;padding:14px}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
-input,select,button{font:inherit;padding:12px;border-radius:8px;border:1px solid #ccc;width:100%;margin:5px 0}
-button{background:#ff7900;color:#fff;border:0;font-weight:700;cursor:pointer}
-button.sec{background:#111}button.small{width:auto;padding:6px 10px;margin:0}
-.row{display:flex;gap:10px;align-items:center;justify-content:space-between}
-.f{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding:4px 0}
-.f label{flex:1;font-weight:600}.f input{width:110px;text-align:center;font-size:20px;margin:2px 0}
-.tot{font-size:30px;font-weight:800;color:#ff7900;text-align:center}
-.btns{display:flex;gap:8px}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 3px;text-align:center;border-bottom:1px solid #eee}th{background:#fff3e6}
-td:first-child,th:first-child{text-align:right}.area{background:#111;color:#fff;font-weight:700}
-.err{color:#c00;min-height:20px}.ok{color:#0a7a2f;font-weight:700;min-height:20px}.warn{background:#fff3e6;border-right:4px solid #ff7900}
-.scroll{overflow-x:auto}
+:root{color-scheme:light;--orange:#f47700;--deep:#d85f00;--cream:#fff4e8;--ink:#242424;--muted:#737373;--line:#eee5dc;--bg:#fffaf5;--green:#16794a;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Tahoma,sans-serif;line-height:1.5}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(110deg,var(--deep),var(--orange));color:white;padding:14px max(16px,env(safe-area-inset-right)) 14px max(16px,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 3px 14px #9b43002b}
+.brand{font-size:18px;font-weight:800}.subbrand{font-size:11px;opacity:.88;font-weight:500}
+header a{color:white;font-size:13px;text-decoration:none;border:1px solid #ffffff70;border-radius:9px;padding:6px 10px}
+main{width:min(100%,850px);margin:auto;padding:16px 14px 40px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:13px;box-shadow:0 5px 20px #7c3b0010}
+h2,h3,p{margin-top:0}h2{font-size:18px;margin-bottom:5px}h3{font-size:15px;margin-bottom:12px}
+.muted{color:var(--muted);font-size:13px}.field{margin:10px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+input,select,button{font:inherit;border-radius:10px;width:100%;padding:11px 12px}
+input,select{border:1px solid #ded6ce;background:white;color:var(--ink);min-height:44px}
+input:focus,select:focus{outline:2px solid #ff790055;border-color:var(--orange)}
+button{border:0;background:var(--orange);color:white;font-weight:750;cursor:pointer;min-height:44px}
+button:disabled{opacity:.55;cursor:wait}.secondary{background:#282828}.light{background:var(--cream);color:var(--deep);border:1px solid #ffe0c1}.danger{background:#fff0ee;color:var(--red);border:1px solid #ffd5d0}.tiny{width:auto;min-height:34px;padding:5px 9px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions>*{flex:1}
+.metric{background:linear-gradient(145deg,#fff8f0,#fff);border:1px solid #f4e4d4;border-radius:12px;padding:12px;text-align:center}
+.metric strong{display:block;font-size:25px;color:var(--deep);line-height:1.25}.metric span{font-size:12px;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.total{font-size:32px;font-weight:850;color:var(--deep);text-align:center}
+.frow{display:flex;align-items:center;gap:10px;border-bottom:1px solid #f1ece7;padding:7px 0}.frow label{flex:1;font-size:14px;font-weight:650}.frow input{width:105px;text-align:center;font-size:18px;font-weight:700;padding:7px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{padding:9px 8px;text-align:center;border-bottom:1px solid #f0ebe6}th{background:var(--cream);font-weight:800}td:first-child,th:first-child{text-align:right}tr:last-child td{border-bottom:0}.area-row td{background:#2a2928;color:white;font-weight:800}
+.notice{padding:11px 12px;border-radius:10px;background:var(--cream);border-right:4px solid var(--orange);font-size:13px;margin:10px 0}
+.error{color:var(--red);font-size:13px;min-height:20px}.success{color:var(--green);font-size:13px;min-height:20px}
+.hidden{display:none!important}.pill{display:inline-block;border-radius:30px;padding:3px 9px;font-size:11px;background:#f1f1f1;color:#555}.pill.ok{background:#e7f6ed;color:var(--green)}.pill.no{background:#fff0ee;color:var(--red)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+@media(min-width:650px){main{padding-top:22px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body>
-<header><span>مبيعات الفروع اليومية</span><span id="nav"></span></header>
-<main id="app"></main>
+<header><div><div class="brand">مبيعات الفروع اليومية</div><div class="subbrand">متابعة وتسجيل أداء الفروع</div></div><span id="nav"></span></header>
+<main id="app"><div class="card">جاري التحميل...</div></main>
 <script>
-const URL_='https://fjhjqrgolqqtaokrlezd.supabase.co',KEY='sb_publishable_6cLV7KQHG3RNeAenIUcKFg_qpWHumZq';
+const SUPABASE_URL='https://fjhjqrgolqqtaokrlezd.supabase.co';
+const SUPABASE_KEY='sb_publishable_6cLV7KQHG3RNeAenIUcKFg_qpWHumZq';
 const TYPES=[['alo','ALO'],['control','Control'],['postpaid','Postpaid'],['dataline','Data line'],['corporate','Corporate'],['mnp','MNP'],['migration','Migration'],['adsl','ADSL'],['simswap','SIM Swap'],['cleansing','Data Cleansing & Gathering']];
-async function rpc(fn,args){
-  const r=await fetch(URL_+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
-  const j=await r.json().catch(()=>null);
-  if(!r.ok)throw new Error((j&&j.message)||'خطأ في الاتصال');
-  return j;
+const $=s=>document.querySelector(s), app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Cairo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const shift=(date,n)=>{const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+const total=v=>TYPES.reduce((s,[k])=>s+(Number(v?.[k])||0),0);
+const emptyValues=()=>Object.fromEntries(TYPES.map(([k])=>[k,0]));
+let branch=JSON.parse(localStorage.getItem('ac_branch')||'null');
+let managerPassword=sessionStorage.getItem('ac_manager_password')||'';
+let managerData=null;
+async function rpc(name,args={}){
+ const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(args)});
+ const data=await response.json().catch(()=>null);
+ if(!response.ok)throw new Error(data?.message||data?.details||'تعذر الاتصال بالخدمة');
+ if(data&&data.ok===false)throw new Error(errorText(data.error));
+ return data;
 }
-const $=s=>document.querySelector(s),app=$('#app');
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const cairoToday=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Africa/Cairo'});
-const sum=v=>TYPES.reduce((a,[k])=>a+(+(v&&v[k])||0),0);
-let me=JSON.parse(localStorage.getItem('ac_branch')||'null');
-function nav(){ $('#nav').innerHTML=location.hash==='#manager'?'<a href="#">الفرع</a>':'<a href="#manager">المدير</a>'; }
-async function pick(){
-  app.innerHTML='<div class="card"><h3>اختار الفرع</h3><select id="sel"><option value="">...</option></select><button id="go">دخول</button><div class="err" id="e"></div></div><div class="card"><h3>فرع جديد؟ سجّله</h3><input id="nm" placeholder="اسم الفرع"><input id="ar" placeholder="المنطقة"><button class="sec" id="add">تسجيل</button></div>';
-  try{const bs=await rpc('ac_list_branches');
-    $('#sel').innerHTML='<option value="">اختار...</option>'+bs.map(b=>`<option value="${b.id}" data-n="${esc(b.name)}" data-a="${esc(b.area)}">${esc(b.area)} - ${esc(b.name)}</option>`).join('');
-  }catch(e){$('#e').textContent=e.message}
-  const set=(id,n,a)=>{me={id,name:n,area:a};localStorage.setItem('ac_branch',JSON.stringify(me));branch()};
-  $('#go').onclick=()=>{const o=$('#sel').selectedOptions[0];if(!o||!o.value){$('#e').textContent='اختار الفرع';return}set(o.value,o.dataset.n,o.dataset.a)};
-  $('#add').onclick=async()=>{try{const n=$('#nm').value.trim(),a=$('#ar').value.trim();if(!n||!a){$('#e').textContent='اكتب اسم الفرع والمنطقة';return}
-    set(await rpc('ac_add_branch',{p_name:n,p_area:a}),n,a)}catch(e){$('#e').textContent=e.message}};
+function errorText(code){return ({wrong:'الرقم السري غير صحيح',locked:'تم إيقاف المحاولة مؤقتًا بسبب محاولات خاطئة',no_branch:'الفرع غير متاح',bad_pin:'الرقم السري لازم يكون من 4 إلى 8 أرقام',bad_name:'اسم الفرع غير صحيح',duplicate:'الفرع مسجل بالفعل',bad_day:'التاريخ غير صحيح',day_locked:'تعديل الأيام مسموح لآخر 3 أيام فقط',period_closed:'الفترة اتقفلت بعد التسليم',bad_number:'راجع الأرقام المدخلة',weak_password:'كلمة المرور لازم تكون 6 أحرف على الأقل'})[code]||code||'حدث خطأ غير متوقع'}
+function nav(){ $('#nav').innerHTML=location.hash==='#manager'?'<a href="#" id="back">واجهة الفرع</a>':'<a href="#manager">لوحة المدير</a>';const b=$('#back');if(b)b.onclick=()=>{}}
+function showError(id,e){const el=$(id);if(el)el.textContent=e.message||String(e)}
+function renderBranchPicker(message=''){
+ branch=null;localStorage.removeItem('ac_branch');
+ app.innerHTML=`<section class="card"><h2>اختيار الفرع</h2><p class="muted">اختار فرعك وسجّل الرقم السري المخصص له.</p>
+ <div class="field"><label>المنطقة والفرع</label><select id="branchSelect"><option value="">جاري تحميل الفروع...</option></select></div>
+ <div class="field"><label>الرقم السري للفرع</label><input id="branchPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="من 4 إلى 8 أرقام"></div>
+ <button id="branchLogin">دخول الفرع</button><div class="error" id="pickError">${esc(message)}</div></section>
+ <section class="card"><h3>معلومة</h3><p class="muted">إضافة الفروع وتعديل بياناتها متاحان من لوحة المدير فقط.</p></section>`;
+ loadBranches();
+ $('#branchLogin').onclick=async()=>{const id=$('#branchSelect').value,pin=$('#branchPin').value.trim();if(!id||!pin){$('#pickError').textContent='اختار الفرع واكتب الرقم السري';return}
+ const btn=$('#branchLogin');btn.disabled=true;try{const result=await rpc('ac_login',{p_branch:id,p_pin:pin});const opt=$('#branchSelect').selectedOptions[0];branch={id,name:result.name||opt.dataset.name,area:opt.dataset.area};localStorage.setItem('ac_branch',JSON.stringify(branch));sessionStorage.setItem('ac_branch_pin',pin);renderBranch()}catch(e){showError('#pickError',e)}finally{btn.disabled=false}};
 }
-async function branch(){
-  if(!me)return pick();
-  const t=cairoToday();let days=[];
-  app.innerHTML=`<div class="card"><div class="row"><b>${esc(me.name)} - ${esc(me.area)}</b><button class="small sec" id="out">تغيير</button></div></div>
-  <div class="card"><label>اليوم</label><input type="date" id="day" value="${t}" max="${t}"><div id="fields"></div>
-  <div class="f"><label>الإجمالي</label><div class="tot" id="tot">0</div></div>
-  <button id="save">حفظ</button><div class="ok" id="m"></div><div class="err" id="e"></div></div>
-  <div class="card"><b id="ptl">إجمالي الفترة</b><div class="scroll"><table><thead><tr>${TYPES.map(([k,l])=>`<th>${l}</th>`).join('')}<th>الإجمالي</th></tr></thead><tbody id="pt"></tbody></table></div></div>
-  <div class="card"><b>آخر الأيام</b><div class="scroll"><table><thead><tr><th>اليوم</th><th>الإجمالي</th></tr></thead><tbody id="h"></tbody></table></div></div>`;
-  $('#fields').innerHTML=TYPES.map(([k,l])=>`<div class="f"><label>${l}</label><input type="number" inputmode="numeric" min="0" id="f_${k}" placeholder="0"></div>`).join('');
-  const calc=()=>{$('#tot').textContent=TYPES.reduce((a,[k])=>a+(+$('#f_'+k).value||0),0)};
-  TYPES.forEach(([k])=>$('#f_'+k).oninput=calc);
-  const fill=()=>{const d=days.find(x=>x.day===$('#day').value);TYPES.forEach(([k])=>{$('#f_'+k).value=d&&d.v[k]?d.v[k]:''});calc();$('#m').textContent=d?'فيه بيانات محفوظة للنهاردة، تقدر تعدلها':''};
-  $('#day').onchange=fill;
-  $('#out').onclick=()=>{localStorage.removeItem('ac_branch');me=null;pick()};
-  function period(){const d=$('#day').value||t;const p1=+d.slice(8)<=15;const a=d.slice(0,8)+(p1?'01':'16'),b=d.slice(0,8)+(p1?'15':'31');
-    const v={};days.filter(x=>x.day>=a&&x.day<=b).forEach(x=>TYPES.forEach(([k])=>v[k]=(v[k]||0)+(+x.v[k]||0)));
-    $('#ptl').textContent='إجمالي الفترة '+(p1?'1 - 15':'16 - آخر الشهر')+' ('+d.slice(0,7)+')';
-    $('#pt').innerHTML='<tr>'+TYPES.map(([k])=>`<td>${v[k]||0}</td>`).join('')+`<td><b>${sum(v)}</b></td></tr>`}
-  $('#day').addEventListener('change',period);
-  async function load(){try{days=await rpc('ac_get_days',{p_branch:me.id});fill();period();
-    $('#h').innerHTML=days.map(r=>`<tr><td>${r.day}</td><td>${sum(r.v)}</td></tr>`).join('')||'<tr><td colspan=2>لسه مفيش</td></tr>'}catch(e){$('#e').textContent=e.message}}
-  $('#save').onclick=async()=>{const v={};TYPES.forEach(([k])=>v[k]=+$('#f_'+k).value||0);$('#e').textContent='';
-    try{await rpc('ac_save_day',{p_branch:me.id,p_day:$('#day').value,p_v:v});await load();$('#m').textContent='تم الحفظ ✓'}catch(e){$('#e').textContent=e.message}};
-  load();
+async function loadBranches(){try{const list=await rpc('ac_list_branches');$('#branchSelect').innerHTML='<option value="">اختار الفرع</option>'+list.map(b=>`<option value="${esc(b.id)}" data-name="${esc(b.name)}" data-area="${esc(b.area)}">${esc(b.area)} - ${esc(b.name)}</option>`).join('')}catch(e){showError('#pickError',e)}}
+function renderFields(values={}){$('#fields').innerHTML=TYPES.map(([k,label])=>`<div class="frow"><label for="v_${k}">${label}</label><input id="v_${k}" type="number" inputmode="numeric" min="0" max="100000" step="1" value="${Number(values[k])||''}" placeholder="0"></div>`).join('');TYPES.forEach(([k])=>$('#v_'+k).addEventListener('input',calcTotal));calcTotal()}
+function readFields(){const v={};TYPES.forEach(([k])=>v[k]=Math.max(0,Math.min(100000,Math.trunc(Number($('#v_'+k).value)||0))));return v}
+function calcTotal(){const el=$('#totalNow');if(el)el.textContent=total(readFields())}
+function renderBranch(){
+ if(!branch||!sessionStorage.getItem('ac_branch_pin'))return renderBranchPicker();
+ const t=today();app.innerHTML=`<section class="card"><div class="row"><div><h2>${esc(branch.name)}</h2><div class="muted">${esc(branch.area)}</div></div><button class="tiny secondary" id="switchBranch">تغيير الفرع</button></div></section>
+ <section class="card"><div class="field"><label for="entryDay">تاريخ التسجيل</label><input id="entryDay" type="date" value="${t}" min="${shift(t,-2)}" max="${t}"></div><div id="fields"></div>
+ <div class="notice row"><b>إجمالي اليوم</b><strong class="total" id="totalNow">0</strong></div>
+ <button id="saveDay">حفظ البيانات</button><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
+ <section class="card"><div class="section-title"><h3 id="periodTitle">إجمالي الفترة الحالية</h3></div><div class="table-wrap"><table><thead><tr>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>الإجمالي</th></tr></thead><tbody id="periodValues"></tbody></table></div></section>
+ <section class="card"><h3>آخر 63 يوم</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الإجمالي</th></tr></thead><tbody id="history"></tbody></table></div></section>`;
+ $('#switchBranch').onclick=()=>{sessionStorage.removeItem('ac_branch_pin');renderBranchPicker()};
+ $('#entryDay').onchange=()=>{fillDay();renderPeriod()};
+ $('#saveDay').onclick=saveBranchDay;
+ loadBranchDays();
 }
-function manager(){
-  app.innerHTML='<div class="card"><h3>دخول المدير</h3><input type="password" id="pw" placeholder="الباسورد"><button id="ok">دخول</button><div class="err" id="e"></div></div><div id="rep"></div>';
-  $('#ok').onclick=()=>show($('#pw').value);
-}
-async function show(pw,range,mo){
-  range=range||'today';const t=cairoToday();mo=mo||t.slice(0,7);let from=t,to=t;
-  const [Y,M]=mo.split('-').map(Number);const last=new Date(Date.UTC(Y,M,0)).getUTCDate();const ml=n=>mo+'-'+String(n).padStart(2,'0');
-  if(range==='week'){const d=new Date(t+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-6);from=d.toISOString().slice(0,10)}
-  if(range==='p1'){from=ml(1);to=ml(15)}
-  if(range==='p2'){from=ml(16);to=ml(last)}
-  if(range==='month'){from=ml(1);to=ml(last)}
-  try{const rows=await rpc('ac_mgr_report',{p_password:pw,p_from:from,p_to:to});
-    const bs={};rows.forEach(r=>{const x=bs[r.branch_id]||(bs[r.branch_id]={id:r.branch_id,name:r.name,area:r.area,v:{},today:false});
-      if(r.day){TYPES.forEach(([k])=>x.v[k]=(x.v[k]||0)+(+r.v[k]||0));if(r.day===t)x.today=true}});
-    const all=Object.values(bs);
-    if(range!=='today'||true){const tr=await rpc('ac_mgr_report',{p_password:pw,p_from:t,p_to:t});const s={};tr.forEach(r=>{if(r.day)s[r.branch_id]=1});all.forEach(b=>b.today=!!s[b.id])}
-    const tot={};TYPES.forEach(([k])=>tot[k]=all.reduce((a,b)=>a+(b.v[k]||0),0));
-    const areas={};all.forEach(b=>(areas[b.area]=areas[b.area]||[]).push(b));
-    const missing=all.filter(b=>!b.today);
-    const head='<tr><th>الفرع</th>'+TYPES.map(([k,l])=>`<th>${l}</th>`).join('')+'<th>الإجمالي</th><th></th></tr>';
-    let body='';Object.keys(areas).sort().forEach(a=>{const ar={};TYPES.forEach(([k])=>ar[k]=areas[a].reduce((s,b)=>s+(b.v[k]||0),0));
-      body+=`<tr class="area"><td>${esc(a)}</td>${TYPES.map(([k])=>`<td>${ar[k]}</td>`).join('')}<td>${sum(ar)}</td><td></td></tr>`;
-      areas[a].forEach(b=>body+=`<tr><td>${esc(b.name)}</td>${TYPES.map(([k])=>`<td>${b.v[k]||0}</td>`).join('')}<td><b>${sum(b.v)}</b></td><td><button class="small sec" data-del="${b.id}">x</button></td></tr>`)});
-    $('#rep').innerHTML=`<div class="card"><div class="btns"><button class="${range==='today'?'':'sec'}" data-r="today">النهاردة</button><button class="${range==='week'?'':'sec'}" data-r="week">7 أيام</button></div><div class="btns"><button class="${range==='p1'?'':'sec'}" data-r="p1">فترة 1-15</button><button class="${range==='p2'?'':'sec'}" data-r="p2">فترة 16-آخر الشهر</button><button class="${range==='month'?'':'sec'}" data-r="month">الشهر كله</button></div><label>الشهر للفترات</label><input type="month" id="mo" value="${mo}"><div class="lbl">${from} → ${to}</div></div>
-    <div class="card"><div class="lbl">إجمالي كل الفروع</div><div class="tot">${sum(tot)}</div><table><thead><tr>${TYPES.map(([k,l])=>`<th>${l}</th>`).join('')}</tr></thead><tbody><tr>${TYPES.map(([k])=>`<td><b>${tot[k]}</b></td>`).join('')}</tr></tbody></table></div>
-    <div class="card warn"><b>فروع لسه ماسلمتش النهاردة (${missing.length})</b><div>${missing.map(b=>esc(b.area)+' - '+esc(b.name)).join('<br>')||'الكل سلّم ✓'}</div></div>
-    <div class="card scroll"><table><thead>${head}</thead><tbody>${body||'<tr><td colspan=13>مفيش فروع</td></tr>'}</tbody></table></div>`;
-    document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>show(pw,b.dataset.r,$('#mo').value));
-    $('#mo').onchange=()=>show(pw,/^(p1|p2|month)$/.test(range)?range:'p1',$('#mo').value);
-    document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(confirm('مسح الفرع وكل أرقامه؟')){await rpc('ac_mgr_delete_branch',{p_password:pw,p_branch:b.dataset.del});show(pw,range,mo)}});
-    const e=$('#e');if(e)e.textContent='';
-  }catch(e){const el=$('#e');if(el)el.textContent=/wrong password/.test(e.message)?'الباسورد غلط':e.message}
-}
-function route(){nav();location.hash==='#manager'?manager():branch()}
-addEventListener('hashchange',route);route();
+let branchDays=[],closedPeriods=[];
+async function loadBranchDays(){try{const pin=sessionStorage.getItem('ac_branch_pin');const d=await rpc('ac_get_days',{p_branch:branch.id,p_pin:pin});branchDays=d.days||[];closedPeriods=d.closed||[];fillDay();renderPeriod();$('#history').innerHTML=branchDays.map(r=>`<tr><td>${esc(r.day)}</td><td><b>${total(r.v)}</b></td></tr>`).join('')||'<tr><td colspan="2">لا توجد بيانات مسجلة حتى الآن</td></tr>'}catch(e){showError('#saveError',e);if(e.message.includes('الرقم السري')){sessionStorage.removeItem('ac_branch_pin');renderBranchPicker(e.message)}}}
+function fillDay(){const d=branchDays.find(x=>x.day===$('#entryDay').value);renderFields(d?.v||{});$('#saveMessage').textContent=d?'توجد بيانات محفوظة لهذا اليوم ويمكن تعديلها':''}
+function renderPeriod(){const date=$('#entryDay').value||today(),day=Number(date.slice(8)),start=date.slice(0,8)+(day<=15?'01':'16'),end=date.slice(0,8)+(day<=15?'15':new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate());const vals=emptyValues();branchDays.filter(x=>x.day>=start&&x.day<=end).forEach(x=>TYPES.forEach(([k])=>vals[k]+=Number(x.v?.[k])||0));$('#periodTitle').textContent='إجمالي الفترة '+(day<=15?'1–15':'16–نهاية الشهر')+' · '+date.slice(0,7);$('#periodValues').innerHTML='<tr>'+TYPES.map(([k])=>'<td>'+vals[k]+'</td>').join('')+'<td><b>'+total(vals)+'</b></td></tr>'}
+async function saveBranchDay(){const date=$('#entryDay').value,t=today(),pin=sessionStorage.getItem('ac_branch_pin');if(date>t||date<shift(t,-2)){showError('#saveError',{message:'يمكن تعديل آخر 3 أيام فقط'});return}const periodStart=date.slice(0,8)+(Number(date.slice(8))<=15?'01':'16');if(closedPeriods.includes(periodStart)){showError('#saveError',{message:'الفترة تم إغلاقها بعد التسليم'});return}const btn=$('#saveDay');btn.disabled=true;$('#saveError').textContent='';try{await rpc('ac_save_day',{p_branch:branch.id,p_pin:pin,p_day:date,p_v:readFields()});await loadBranchDays();$('#saveMessage').textContent='تم حفظ البيانات بنجاح ✓'}catch(e){showError('#saveError',e)}finally{btn.disabled=false}}
+function renderManagerLogin(message=''){managerPassword='';sessionStorage.removeItem('ac_manager_password');app.innerHTML=`<section class="card"><h2>دخول المدير</h2><p class="muted">أدخل كلمة مرور المدير لعرض التقارير وإدارة الفروع.</p><div class="field"><label>كلمة المرور</label><input id="managerPassword" type="password" autocomplete="current-password"></div><button id="managerLogin">دخول</button><div class="error" id="managerError">${esc(message)}</div></section>`;$('#managerLogin').onclick=managerLogin;$('#managerPassword').onkeydown=e=>{if(e.key==='Enter')managerLogin()}}
+async function managerLogin(){const p=$('#managerPassword').value,btn=$('#managerLogin');btn.disabled=true;try{await rpc('ac_mgr_check',{p_password:p});managerPassword=p;sessionStorage.setItem('ac_manager_password',p);renderManager()}catch(e){showError('#managerError',e)}finally{btn.disabled=false}}
+function managerCall(name,args={}){return rpc(name,{p_password:managerPassword,...args})}
+function renderManager(){if(!managerPassword)return renderManagerLogin();const t=today();app.innerHTML=`<section class="card"><div class="row"><div><h2>لوحة متابعة الفروع</h2><div class="muted">تقارير المبيعات وإدارة الفروع</div></div><button class="tiny secondary" id="managerLogout">خروج</button></div></section>
+ <section class="card"><h3>الفترة المطلوبة</h3><div class="grid"><div class="field"><label>من</label><input id="fromDate" type="date" value="${t.slice(0,7)}-01"></div><div class="field"><label>إلى</label><input id="toDate" type="date" value="${t}"></div></div><button id="refreshReport">عرض التقرير</button><div class="error" id="managerError"></div></section>
+ <div id="managerReport"></div>
+ <section class="card"><h3>إدارة الفروع</h3><div class="grid"><div class="field"><label>اسم الفرع</label><input id="branchName" placeholder="اسم الفرع"></div><div class="field"><label>المنطقة</label><input id="branchArea" placeholder="المنطقة"></div></div><div class="field"><label>رقم سري للفرع (4–8 أرقام)</label><input id="branchNewPin" inputmode="numeric" maxlength="8" placeholder="إلزامي عند الإضافة"></div><input id="branchId" type="hidden"><div class="actions"><button id="saveBranch">إضافة فرع</button><button class="light" id="clearBranch">مسح الحقول</button></div><div class="success" id="branchMessage"></div><div class="error" id="branchError"></div><div id="branchList"></div></section>
+ <section class="card"><div class="section-title"><h3>سجل التعديلات</h3><button class="tiny light" id="loadAudit">عرض آخر التعديلات</button></div><div id="auditList" class="muted">اضغط لعرض سجل التعديلات.</div></section>`;
+ $('#managerLogout').onclick=()=>renderManagerLogin();$('#refreshReport').onclick=loadManagerReport;$('#saveBranch').onclick=saveManagerBranch;$('#clearBranch').onclick=clearBranchForm;$('#loadAudit').onclick=loadAudit;loadManagerReport()}
+async function loadManagerReport(){const from=$('#fromDate').value,to=$('#toDate').value;if(!from||!to||from>to){showError('#managerError',{message:'راجع تاريخ بداية ونهاية التقرير'});return}try{const data=await managerCall('ac_mgr_data',{p_from:from,p_to:to});managerData=data;drawManagerReport(data,from,to)}catch(e){showError('#managerError',e)}}
+function drawManagerReport(data,from,to){const entries=data.entries||[],branches=data.branches||[],todayValue=data.today||today(),byId={};branches.forEach(b=>byId[b.id]={...b,v:emptyValues(),submittedToday:false});entries.forEach(r=>{const b=byId[r.branch_id];if(!b)return;TYPES.forEach(([k])=>b.v[k]+=Number(r.v?.[k])||0);if(r.day===todayValue)b.submittedToday=true});const all=Object.values(byId),totals=emptyValues();all.forEach(b=>TYPES.forEach(([k])=>totals[k]+=b.v[k]));const areas={};all.forEach(b=>(areas[b.area||'بدون منطقة']??=[]).push(b));const missing=all.filter(b=>!b.submittedToday);
+ let html=`<section class="card"><div class="muted">${esc(from)} ← ${esc(to)}</div><div class="total">${total(totals)}</div><div class="muted" style="text-align:center">إجمالي كل الفروع · ${all.length} فرع</div><div class="grid" style="margin-top:12px">${TYPES.map(([k,l])=>`<div class="metric"><strong>${totals[k]}</strong><span>${l}</span></div>`).join('')}</div></section>
+ <section class="card"><h3>حالة تسليم اليوم</h3><div class="notice">${missing.length?('لم تسجل '+missing.length+' فروع أرقام اليوم: '+missing.map(b=>esc(b.area)+' - '+esc(b.name)).join('، ')):'كل الفروع سجلت أرقام اليوم ✓'}</div></section>
+ <section class="card"><h3>تفاصيل الفروع</h3><div class="table-wrap"><table><thead><tr><th>الفرع</th>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>الإجمالي</th><th>إجراء</th></tr></thead><tbody>${Object.keys(areas).sort().map(area=>{const group=areas[area],av=emptyValues();group.forEach(b=>TYPES.forEach(([k])=>av[k]+=b.v[k]));return '<tr class="area-row"><td>'+esc(area)+'</td>'+TYPES.map(([k])=>'<td>'+av[k]+'</td>').join('')+'<td>'+total(av)+'</td><td></td></tr>'+group.map(b=>'<tr><td>'+esc(b.name)+'<br><span class="pill '+(b.submittedToday?'ok':'no')+'">'+(b.submittedToday?'سلّم اليوم':'لم يسلّم')+'</span></td>'+TYPES.map(([k])=>'<td>'+b.v[k]+'</td>').join('')+'<td><b>'+total(b.v)+'</b></td><td><button class="tiny light" data-edit="'+esc(b.id)+'">تعديل</button></td></tr>').join('')}).join('')||'<tr><td colspan="13">لا توجد فروع مسجلة</td></tr>'}</tbody></table></div><div class="actions" style="margin-top:10px"><button class="light" id="exportCsv">تصدير CSV</button></div></section>
+ <section class="card" id="managerEditCard"><h3>تعديل بيانات فرع</h3><p class="muted">اختار الفرع من زر تعديل في الجدول لعرض النموذج هنا.</p><div id="managerEdit"></div></section>
+ <section class="card"><h3>الفترات المسلّمة</h3><div id="handoverList" class="muted">لا توجد بيانات تسليم ضمن الفترة.</div></section>`;
+ $('#managerReport').innerHTML=html;document.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>editManagerEntry(btn.dataset.edit));$('#exportCsv').onclick=()=>exportReport(all,from,to);drawHandovers(data.handovers||[])}
+function exportReport(rows,from,to){const headers=['المنطقة','الفرع',...TYPES.map(x=>x[1]),'الإجمالي'];const lines=[headers,...rows.map(b=>[b.area,b.name,...TYPES.map(([k])=>b.v[k]),total(b.v)])];const csv='\ufeff'+lines.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='branch-sales-'+from+'-'+to+'.csv';a.click();URL.revokeObjectURL(a.href)}
+function editManagerEntry(id){const b=managerData?.branches?.find(x=>x.id===id);if(!b)return;const date=$('#toDate').value;$('#managerEdit').innerHTML=`<div class="notice">${esc(b.area)} · ${esc(b.name)}</div><div class="field"><label>التاريخ</label><input type="date" id="mgrDay" value="${date}" max="${today()}"></div><div id="mgrFields"></div><button id="mgrSaveDay">حفظ تعديل المدير</button><div class="error" id="mgrEditError"></div><div class="success" id="mgrEditSuccess"></div>`;const row=(managerData.entries||[]).find(x=>x.branch_id===id&&x.day===date);$('#mgrFields').innerHTML=TYPES.map(([k,l])=>`<div class="frow"><label>${l}</label><input type="number" min="0" max="100000" id="m_${k}" value="${Number(row?.v?.[k])||0}"></div>`).join('');$('#mgrDay').onchange=()=>{const r=(managerData.entries||[]).find(x=>x.branch_id===id&&x.day===$('#mgrDay').value);TYPES.forEach(([k])=>$('#m_'+k).value=Number(r?.v?.[k])||0)};$('#mgrSaveDay').onclick=async()=>{const v={};TYPES.forEach(([k])=>v[k]=Math.max(0,Math.min(100000,Math.trunc(Number($('#m_'+k).value)||0))));try{await managerCall('ac_mgr_save_day',{p_branch:id,p_day:$('#mgrDay').value,p_v:v});$('#mgrEditSuccess').textContent='تم حفظ التعديل';await loadManagerReport()}catch(e){showError('#mgrEditError',e)}}}
+function drawHandovers(items){$('#handoverList').innerHTML=items.length?items.map(h=>`<div class="row" style="padding:8px 0;border-bottom:1px solid #eee"><span>${esc(h.period_start)} · ${esc(h.branch_id)}</span><span class="pill ok">تم الاستلام</span></div>`).join(''):'لا توجد فترات مسلّمة ضمن النطاق.'}
+async function saveManagerBranch(){const id=$('#branchId').value||null,name=$('#branchName').value.trim(),area=$('#branchArea').value.trim(),pin=$('#branchNewPin').value.trim();try{await managerCall('ac_mgr_save_branch',{p_id:id,p_name:name,p_area:area,p_pin:pin||null});$('#branchMessage').textContent='تم حفظ بيانات الفرع';clearBranchForm();await loadManagerReport()}catch(e){showError('#branchError',e)}}
+function clearBranchForm(){['branchId','branchName','branchArea','branchNewPin'].forEach(id=>$('#'+id).value='');$('#saveBranch').textContent='إضافة فرع';$('#branchMessage').textContent=''}
+async function loadAudit(){try{const data=await managerCall('ac_mgr_audit',{p_limit:30});$('#auditList').innerHTML=(data.rows||[]).map(r=>`<div style="padding:8px 0;border-bottom:1px solid #eee"><b>${esc(r.name)}</b> · ${esc(r.day)}<div class="muted">بواسطة ${esc(r.actor)} · ${esc(new Date(r.at).toLocaleString('ar-EG'))}</div></div>`).join('')||'لا توجد تعديلات مسجلة'}catch(e){showError('#auditList',e)}}
+async function route(){nav();if(location.hash==='#manager'){if(managerPassword){try{await rpc('ac_mgr_check',{p_password:managerPassword});renderManager()}catch(e){renderManagerLogin(e.message)}}else renderManagerLogin()}else if(branch&&sessionStorage.getItem('ac_branch_pin'))renderBranch();else renderBranchPicker()}
+window.addEventListener('hashchange',route);route();
 </script>
 </body>
 </html>
