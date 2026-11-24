@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#d85f00"><title>متابعة مستر عبدالرحمن</title>
+<meta name="theme-color" content="#d85f00"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="متابعة عبدالرحمن"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/app-icon.svg" type="image/svg+xml"><title>متابعة مستر عبدالرحمن</title>
 <style>
 :root{color-scheme:light;--orange:#f47700;--deep:#c95100;--cream:#fff3e6;--ink:#242424;--muted:#777;--line:#eee4da;--bg:#fffaf5;--green:#16794a;--red:#b42318}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Tahoma,sans-serif;line-height:1.55}
@@ -107,4 +107,5 @@ function drawReport(data,from,to){
 }
 async function boot(){if(!viewerPassword)return loginScreen();try{await rpc('ac_viewer_check',{p_password:viewerPassword});renderApp()}catch(e){loginScreen(e.message)}}
 boot();
+if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(err => console.warn("SW registration failed", err))); }
 </script></main></body></html>
