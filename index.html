@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ff7900">
+<meta name="theme-color" content="#d85f00"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="مبيعات الفروع"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/app-icon.svg" type="image/svg+xml">
 <title>مبيعات الفروع اليومية</title>
 <style>
 :root{color-scheme:light;--orange:#f47700;--deep:#d85f00;--cream:#fff4e8;--ink:#242424;--muted:#737373;--line:#eee5dc;--bg:#fffaf5;--green:#16794a;--red:#b42318}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Tahoma,sans-serif;line-height:1.5}
 header{position:sticky;top:0;z-index:5;background:linear-gradient(110deg,var(--deep),var(--orange));color:white;padding:14px max(16px,env(safe-area-inset-right)) 14px max(16px,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 3px 14px #9b43002b}
 .brand{font-size:18px;font-weight:800}.subbrand{font-size:11px;opacity:.88;font-weight:500}
-header a{color:white;font-size:13px;text-decoration:none;border:1px solid #ffffff70;border-radius:9px;padding:6px 10px}
+header a{color:white;font-size:13px;text-decoration:none;border:1px solid #ffffff70;border-radius:9px;padding:6px 10px}.install-app{display:none;width:auto;min-height:34px;padding:6px 10px;background:#fff4e8;color:#9b4300;border:1px solid #ffffff90;border-radius:9px;font-size:12px;box-shadow:none}
 main{width:min(100%,850px);margin:auto;padding:16px 14px 40px}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:13px;box-shadow:0 5px 20px #7c3b0010}
 h2,h3,p{margin-top:0}h2{font-size:18px;margin-bottom:5px}h3{font-size:15px;margin-bottom:12px}
@@ -81,7 +81,7 @@ input,select{border-radius:12px}
 .type-entry{align-items:center;gap:12px}.type-entry>label{flex:0 0 92px;font-weight:800}.type-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}.type-inputs small{display:block;color:var(--muted);font-size:11px;font-weight:700;text-align:center;margin-bottom:3px}.type-inputs input{width:100%;text-align:center;font-size:17px;font-weight:800;padding:7px 5px;min-width:0}@media(max-width:380px){.type-entry>label{flex-basis:76px}.type-inputs{gap:5px}}</style>
 </head>
 <body>
-<header><div><div class="brand">مبيعات الفروع اليومية</div><div class="subbrand">تسجيل المبيعات اليومية للفرع</div></div><span id="nav"></span></header>
+<header><div><div class="brand">مبيعات الفروع اليومية</div><div class="subbrand">تسجيل المبيعات اليومية للفرع</div></div><span id="nav"></span><button id="installApp" class="install-app" type="button">تثبيت التطبيق</button></header>
 <main id="app"><div class="card">جاري التحميل...</div></main>
 <script>
 const SUPABASE_URL='https://fjhjqrgolqqtaokrlezd.supabase.co';
@@ -210,6 +210,18 @@ function drawViewerReport(data,from,to){const branches=data.branches||[],entries
 <section class="card"><h3>ملخص الأيام</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>الإجمالي</th></tr></thead><tbody>${sortedDays.map(d=>'<tr><td>'+esc(d)+'</td>'+TYPES.map(([k])=>'<td>'+daily[d][k]+'</td>').join('')+'<td><b>'+total(daily[d])+'</b></td></tr>').join('')||'<tr><td colspan="13">لا توجد تسجيلات في الفترة المحددة</td></tr>'}</tbody></table></div></section>`}
 async function route(){nav();if(branch&&sessionStorage.getItem('ac_branch_pin'))renderBranch();else renderBranchPicker()}
 window.addEventListener('hashchange',route);route();
+let deferredInstallPrompt=null;
+const installButton=document.getElementById('installApp');
+window.addEventListener('beforeinstallprompt',event=>{
+ event.preventDefault();deferredInstallPrompt=event;installButton.style.display='inline-block';
+});
+installButton.addEventListener('click',async()=>{
+ if(!deferredInstallPrompt)return;
+ deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;
+ deferredInstallPrompt=null;installButton.style.display='none';
+});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;installButton.style.display='none';});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('SW registration failed',err)));}
 </script>
 </body>
 </html>
