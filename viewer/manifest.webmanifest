@@ -12,6 +12,6 @@
   "background_color": "#fffaf5",
   "theme_color": "#d85f00",
   "icons": [
-    { "src": "/icons/app-icon.svg", "sizes": "192x192 512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "/icons/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }
