@@ -88,19 +88,17 @@ function drawReport(data,from,to){
  if(selected){
   const ordered=selected.days.slice().sort((a,b)=>b.day.localeCompare(a.day));
   const dayValue=ordered.find(r=>r.day===detailDay)?.v||{};
-  const [yy,mm,dd]=(detailDay||today()).split('-').map(Number);
-  const halfStart=dd<=15?1:16,halfEnd=dd<=15?15:new Date(yy,mm,0).getDate();
-  const pFrom=`${yy}-${String(mm).padStart(2,'0')}-${String(halfStart).padStart(2,'0')}`,pTo=`${yy}-${String(mm).padStart(2,'0')}-${String(halfEnd).padStart(2,'0')}`;
-  const periodRows=ordered.filter(r=>r.day>=pFrom&&r.day<=pTo);
+  const [yy,mm]=(detailDay||today()).split('-').map(Number);
+  const dateKey=(day)=>`${yy}-${String(mm).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const periods=[{label:'من يوم 1 إلى يوم 15',from:dateKey(1),to:dateKey(15)},{label:'من يوم 16 إلى يوم 30',from:dateKey(16),to:dateKey(30)}];
   const sum=(key,rows)=>rows.reduce((n,r)=>n+(Number(r.v?.[key])||0),0);
-  const periodValues=TYPES.map(([k,label])=>`<tr><td>${esc(label)}</td><td>${sum(k,periodRows)}</td></tr>`).join('');
+  const periodCards=periods.map(p=>{const rows=ordered.filter(r=>r.day>=p.from&&r.day<=p.to);const values=TYPES.map(([k,label])=>`<tr><td>${esc(label)}</td><td>${sum(k,rows)}</td></tr>`).join('');return `<div class="period-summary"><h3>${p.label}</h3><div class="grid"><div class="metric"><strong>${sum('sales_count',rows)}</strong><span>إجمالي المبيعات</span></div><div class="metric"><strong>${sum('contracts_count',rows)}</strong><span>إجمالي العقود</span></div></div><div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>كل بند</th><th>إجمالي المسجل</th></tr></thead><tbody>${values}<tr><th>إجمالي الأنواع</th><th>${TYPES.reduce((n,[k])=>n+sum(k,rows),0)}</th></tr></tbody></table></div></div>`;}).join('');
   const dayValues=TYPES.map(([k,label])=>`<tr><td>${esc(label)}</td><td>${Number(dayValue[k])||0}</td></tr>`).join('');
   detail=`<section class="card"><div class="section-title"><div><h3>${esc(selected.name)}</h3><div class="muted">تفاصيل التسجيل اليومي والفترة</div></div></div>
    <div class="field"><label for="detailDay">تاريخ اليوم</label><input id="detailDay" type="date" value="${esc(detailDay||today())}" min="${esc(from)}" max="${esc(to)}"></div>
    <h3 style="margin-top:16px">بيانات اليوم</h3><div class="grid"><div class="metric"><strong>${Number(dayValue.sales_count)||0}</strong><span>عدد المبيعات</span></div><div class="metric"><strong>${Number(dayValue.contracts_count)||0}</strong><span>عدد العقود</span></div></div>
    <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>كل بند</th><th>عدد اليوم</th></tr></thead><tbody>${dayValues}<tr><th>إجمالي الأنواع</th><th>${TYPES.reduce((n,[k])=>n+(Number(dayValue[k])||0),0)}</th></tr></tbody></table></div>
-   <h3 style="margin-top:20px">إجمالي الفترة ${halfStart}–${halfEnd}</h3><div class="grid"><div class="metric"><strong>${sum('sales_count',periodRows)}</strong><span>إجمالي المبيعات</span></div><div class="metric"><strong>${sum('contracts_count',periodRows)}</strong><span>إجمالي العقود</span></div></div>
-   <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>كل بند</th><th>إجمالي الفترة</th></tr></thead><tbody>${periodValues}<tr><th>إجمالي الأنواع</th><th>${TYPES.reduce((n,[k])=>n+sum(k,periodRows),0)}</th></tr></tbody></table></div>
+   <h3 style="margin-top:20px">إجمالي المسجل حسب الفترات</h3>${periodCards}
    <h3 style="margin-top:20px">سجل الأيام والعقود</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>عدد المبيعات</th><th>عدد العقود</th></tr></thead><tbody>${ordered.map(r=>`<tr><td>${esc(r.day)}</td><td>${Number(r.v?.sales_count)||0}</td><td>${Number(r.v?.contracts_count)||0}</td></tr>`).join('')||'<tr><td colspan="3">لا توجد بيانات مسجلة</td></tr>'}</tbody></table></div></section>`;
  }
  $('#report').innerHTML=`<section class="card"><h3>الفروع وحالة التسجيل اليوم</h3><p class="muted">الفروع مرتبة تحت بعضها. اضغط على الفرع لعرض اليوم والفترة وكل البنود والعقود.</p><div class="branch-grid">${branchCards}</div></section>${detail}`;
