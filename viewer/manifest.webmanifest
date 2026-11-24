@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "متابعة مستر عبدالرحمن",
+  "short_name": "متابعة عبدالرحمن",
+  "description": "لوحة تقارير ومتابعة الفروع",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffaf5",
+  "theme_color": "#d85f00",
+  "icons": [
+    { "src": "/icons/app-icon.svg", "sizes": "192x192 512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
