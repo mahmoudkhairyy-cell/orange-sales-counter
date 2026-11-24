@@ -51,9 +51,10 @@ th{background:#fff1e2}
 .branch-card .branch-status.ok{background:#e9f7ef;color:#16794a}
 .branch-card .branch-status.no{background:#fff0ed;color:#b42318}
 .branch-card .branch-arrow{font-size:19px;color:var(--orange);margin-right:5px}
+.install-app{display:none;width:auto;min-height:34px;padding:6px 10px;margin-top:9px;background:#fff4e8;color:#9b4300;border:1px solid #ffffff90;border-radius:9px;font-size:12px;box-shadow:none}
 
 </style></head><body>
-<header><div class="brand">متابعة مستر عبدالرحمن</div><div class="sub">لوحة تقارير الفروع</div></header>
+<header><div class="brand">متابعة مستر عبدالرحمن</div><div class="sub">لوحة تقارير الفروع</div><button id="installApp" class="install-app" type="button">تثبيت التطبيق</button></header>
 <main id="app"><section class="card">جاري التحميل...</section></main>
 <script>
 const SUPABASE_URL='https://fjhjqrgolqqtaokrlezd.supabase.co';
@@ -106,6 +107,24 @@ function drawReport(data,from,to){
  const dayInput=document.querySelector('#detailDay');if(dayInput)dayInput.onchange=()=>{detailDay=dayInput.value;drawReport(data,from,to)};
 }
 async function boot(){if(!viewerPassword)return loginScreen();try{await rpc('ac_viewer_check',{p_password:viewerPassword});renderApp()}catch(e){loginScreen(e.message)}}
+let deferredInstallPrompt=null;
+const installButton=document.getElementById("installApp");
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  installButton.style.display="inline-block";
+});
+installButton.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  installButton.style.display="none";
+});
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt=null;
+  installButton.style.display="none";
+});
 boot();
 if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(err => console.warn("SW registration failed", err))); }
 </script></main></body></html>
