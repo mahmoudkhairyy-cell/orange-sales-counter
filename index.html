@@ -31,6 +31,42 @@ button:disabled{opacity:.55;cursor:wait}.secondary{background:#282828}.light{bac
 .hidden{display:none!important}.pill{display:inline-block;border-radius:30px;padding:3px 9px;font-size:11px;background:#f1f1f1;color:#555}.pill.ok{background:#e7f6ed;color:var(--green)}.pill.no{background:#fff0ee;color:var(--red)}
 .section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 @media(min-width:650px){main{padding-top:22px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Premium branch workspace */
+:root{--orange:#f47700;--deep:#c85a00;--cream:#fff2e4;--ink:#20242b;--muted:#69717c;--line:#e9e2da;--bg:#f7f8fa}
+body{background:linear-gradient(180deg,#fff8f0 0,#f7f8fa 340px);font-family:Tahoma,Arial,sans-serif}
+header{background:linear-gradient(112deg,#a94300 0%,#e96900 52%,#ff9b36 100%);padding:16px max(18px,env(safe-area-inset-right));box-shadow:0 8px 26px #9b43002b}
+.brand{font-size:19px;letter-spacing:-.2px}main{max-width:900px;padding:20px 15px 52px}
+.card{border:1px solid #e9e2da;border-radius:18px;padding:18px;box-shadow:0 8px 28px #1720330a}
+.metric{border-radius:15px;background:linear-gradient(145deg,#fff8f0,#fff);border-color:#f1dfcc}
+button{border-radius:12px;box-shadow:0 3px 8px #9b43001a}
+input,select{border-radius:12px}
+.frow{padding:9px 2px}.frow label{font-weight:700;color:#303640}
+.notice{border-radius:13px}
+@media(min-width:650px){.grid{gap:12px}}
+
+
+#contractPrintSheet{display:none}
+@page{size:A4 portrait;margin:12mm}
+@media print{
+ body{background:#fff!important;color:#111!important;margin:0!important}
+ body>*:not(#contractPrintSheet){display:none!important}
+ #contractPrintSheet{display:block!important;position:static!important;width:100%!important;color:#111!important;font-family:Arial,Tahoma,sans-serif!important}
+ .paper-frame{border:2px solid #182c50;min-height:270mm;padding:12mm 13mm;position:relative}
+ .paper-frame:before{content:"";position:absolute;inset:3mm;border:1px solid #182c50;pointer-events:none}
+ .paper-head{text-align:center;margin:2mm 0 10mm}
+ .paper-title{font-family:Georgia,serif;font-size:25pt;font-weight:800;letter-spacing:.3px;margin-bottom:7mm}
+ .paper-meta{text-align:left;font-size:12pt;line-height:2.1;padding:0 2mm}
+ .write-line{display:inline-block;min-width:45mm;border-bottom:1px dotted #555;height:7mm;vertical-align:bottom}
+ .paper-table{width:72%;margin:8mm auto 0;border-collapse:collapse;font-size:13pt}
+ .paper-table th,.paper-table td{border:1px solid #111;padding:3.2mm 4mm;text-align:center;color:#111;background:#fff!important}
+ .paper-table th{font-size:14pt;font-weight:800}
+ .paper-table td:first-child{text-align:left;font-weight:600}
+ .paper-total td{font-weight:900}
+ .paper-sign{display:flex;justify-content:space-between;margin:22mm 2mm 0;font-size:11pt}
+ .paper-sign span{display:inline-block;width:32mm;border-bottom:1px dotted #555;margin-left:4mm}
+}
+
 </style>
 </head>
 <body>
@@ -79,17 +115,34 @@ function renderBranch(){
  const t=today();app.innerHTML=`<section class="card"><div class="row"><div><h2>${esc(branch.name)}</h2></div><button class="tiny secondary" id="switchBranch">تغيير الفرع</button></div></section>
  <section class="card"><div class="field"><label for="entryDay">تاريخ التسجيل</label><input id="entryDay" type="date" value="${t}" min="${shift(t,-2)}" max="${t}"></div><div id="fields"></div>
  <div class="notice row"><b>إجمالي اليوم</b><strong class="total" id="totalNow">0</strong></div>
- <button id="saveDay">حفظ البيانات</button><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
+ <div class="actions"><button id="saveDay">حفظ البيانات</button><button class="light" id="printContract">طباعة كشف العقود A4</button></div><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
  <section class="card"><div class="section-title"><h3 id="periodTitle">إجمالي الفترة الحالية</h3></div><div class="table-wrap"><table><thead><tr>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>عدد العقود</th><th>عدد المبيعات</th><th>الإجمالي</th></tr></thead><tbody id="periodValues"></tbody></table></div></section>
  <section class="card"><h3>آخر 63 يوم</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>عدد العقود</th><th>عدد المبيعات</th><th>إجمالي الأنواع</th></tr></thead><tbody id="history"></tbody></table></div></section>`;
  $('#switchBranch').onclick=()=>{sessionStorage.removeItem('ac_branch_pin');renderBranchPicker()};
  $('#entryDay').onchange=()=>{fillDay();renderPeriod()};
- $('#saveDay').onclick=saveBranchDay;
+ $('#saveDay').onclick=saveBranchDay;$('#printContract').onclick=printContractSheet;
  loadBranchDays();
 }
 let branchDays=[],closedPeriods=[];
 async function loadBranchDays(){try{const pin=sessionStorage.getItem('ac_branch_pin');const d=await rpc('ac_get_days',{p_branch:branch.id,p_pin:pin});branchDays=d.days||[];closedPeriods=d.closed||[];fillDay();renderPeriod();$('#history').innerHTML=branchDays.map(r=>`<tr><td>${esc(r.day)}</td><td>${Number(r.v?.contracts_count)||0}</td><td>${Number(r.v?.sales_count)||0}</td><td><b>${total(r.v)}</b></td></tr>`).join('')||'<tr><td colspan="2">لا توجد بيانات مسجلة حتى الآن</td></tr>'}catch(e){showError('#saveError',e);if(e.message.includes('الرقم السري')){sessionStorage.removeItem('ac_branch_pin');renderBranchPicker(e.message)}}}
 function fillDay(){const d=branchDays.find(x=>x.day===$('#entryDay').value);renderFields(d?.v||{});$('#saveMessage').textContent=d?'توجد بيانات محفوظة لهذا اليوم ويمكن تعديلها':''}
+
+function periodBounds(monthValue,half){const [y,m]=monthValue.split('-').map(Number),start=half==='first'?1:16,end=half==='first'?15:30;return {start:new Date(y,m-1,start),end:new Date(y,m-1,end),from:y+'-'+String(m).padStart(2,'0')+'-'+String(start).padStart(2,'0'),to:y+'-'+String(m).padStart(2,'0')+'-'+String(end).padStart(2,'0')}}
+function printContractSheet(){
+ const date=$('#entryDay').value||today(),month=date.slice(0,7),half=Number(date.slice(8))<=15?'first':'second',range=periodBounds(month,half);
+ const rows=branchDays.filter(x=>x.day>=range.from&&x.day<=range.to),totals=emptyValues();
+ rows.forEach(r=>TYPES.forEach(([k])=>totals[k]+=Number(r.v?.[k])||0));
+ const fmt=d=>d.getDate()+'/'+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+'/'+d.getFullYear();
+ const values=TYPES.map(([k,label])=>({label,value:totals[k]}));
+ const totalContracts=values.reduce((s,x)=>s+x.value,0);
+ const print=document.createElement('div');print.id='contractPrintSheet';print.innerHTML=`
+ <div class="paper-frame"><div class="paper-head"><div class="paper-title">AlSafy Retail CIF</div>
+ <div class="paper-meta"><div><b>Shop Name:</b> ${esc(branch.name)}</div><div><b>Period from:</b> ${fmt(range.start)} <b>to</b> ${fmt(range.end)}</div><div><b>Manager Signature:</b> <span class="write-line"></span></div><div><b>Shop Code &amp; Stamp:</b> <span class="write-line"></span></div></div></div>
+ <table class="paper-table"><thead><tr><th>Type</th><th>Contracts</th></tr></thead><tbody>${values.map(x=>'<tr><td>'+esc(x.label)+'</td><td>'+(x.value===0?'X':x.value)+'</td></tr>').join('')}<tr class="paper-total"><td>Total</td><td>${totalContracts}</td></tr></tbody></table>
+ <div class="paper-sign"><div><b>تاريخ الاستلام:</b><span></span></div><div><b>إمضاء المستلم:</b><span></span></div></div></div>`;
+ document.body.appendChild(print);window.print();setTimeout(()=>print.remove(),700);
+}
+
 function renderPeriod(){const date=$('#entryDay').value||today(),day=Number(date.slice(8)),start=date.slice(0,8)+(day<=15?'01':'16'),end=date.slice(0,8)+(day<=15?'15':new Date(Date.UTC(Number(date.slice(0,4)),Number(date.slice(5,7)),0)).getUTCDate());const vals=emptyValues();branchDays.filter(x=>x.day>=start&&x.day<=end).forEach(x=>TYPES.forEach(([k])=>vals[k]+=Number(x.v?.[k])||0));$('#periodTitle').textContent='إجمالي الفترة '+(day<=15?'1–15':'16–نهاية الشهر')+' · '+date.slice(0,7);const contracts=branchDays.filter(x=>x.day>=start&&x.day<=end).reduce((s,x)=>s+(Number(x.v?.contracts_count)||0),0),sales=branchDays.filter(x=>x.day>=start&&x.day<=end).reduce((s,x)=>s+(Number(x.v?.sales_count)||0),0);$('#periodValues').innerHTML='<tr>'+TYPES.map(([k])=>'<td>'+vals[k]+'</td>').join('')+'<td>'+contracts+'</td><td>'+sales+'</td><td><b>'+total(vals)+'</b></td></tr>'}
 async function saveBranchDay(){const date=$('#entryDay').value,t=today(),pin=sessionStorage.getItem('ac_branch_pin');if(date>t||date<shift(t,-2)){showError('#saveError',{message:'يمكن تعديل آخر 3 أيام فقط'});return}const periodStart=date.slice(0,8)+(Number(date.slice(8))<=15?'01':'16');if(closedPeriods.includes(periodStart)){showError('#saveError',{message:'الفترة تم إغلاقها بعد التسليم'});return}const btn=$('#saveDay');btn.disabled=true;$('#saveError').textContent='';try{await rpc('ac_save_day',{p_branch:branch.id,p_pin:pin,p_day:date,p_v:readFields()});await loadBranchDays();$('#saveMessage').textContent='تم حفظ البيانات بنجاح ✓'}catch(e){showError('#saveError',e)}finally{btn.disabled=false}}
 function renderManagerLogin(message=''){managerPassword='';sessionStorage.removeItem('ac_manager_password');app.innerHTML=`<section class="card"><h2>دخول المدير</h2><p class="muted">أدخل كلمة مرور المدير لعرض التقارير وإدارة الفروع.</p><div class="field"><label>كلمة المرور</label><input id="managerPassword" type="password" autocomplete="current-password"></div><button id="managerLogin">دخول</button><div class="error" id="managerError">${esc(message)}</div></section>`;$('#managerLogin').onclick=managerLogin;$('#managerPassword').onkeydown=e=>{if(e.key==='Enter')managerLogin()}}
