@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "متابعة مستر عبدالرحمن",
-  "short_name": "متابعة عبدالرحمن",
-  "description": "لوحة تقارير ومتابعة الفروع",
+  "name": "Contract Follow-up",
+  "short_name": "Contracts",
+  "description": "Branch contract follow-up and reports",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/",
