@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "مبيعات الفروع اليومية",
-  "short_name": "مبيعات الفروع",
-  "description": "تسجيل ومتابعة المبيعات اليومية للفرع",
+  "name": "Contract Follow-up",
+  "short_name": "Contracts",
+  "description": "Branch contract follow-up and daily sales tracking",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/",
