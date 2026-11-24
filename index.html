@@ -117,14 +117,14 @@ function renderBranch(){
  <div class="notice row"><b>إجمالي اليوم</b><strong class="total" id="totalNow">0</strong></div>
  <div class="actions"><button id="saveDay">حفظ البيانات</button><button class="light" id="printContract">طباعة كشف العقود A4</button></div><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
  <section class="card"><div class="section-title"><h3 id="periodTitle">إجمالي الفترة الحالية</h3></div><div class="table-wrap"><table><thead><tr>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>عدد العقود</th><th>عدد المبيعات</th><th>الإجمالي</th></tr></thead><tbody id="periodValues"></tbody></table></div></section>
- <section class="card"><h3>آخر 63 يوم</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>عدد العقود</th><th>عدد المبيعات</th><th>إجمالي الأنواع</th></tr></thead><tbody id="history"></tbody></table></div></section>`;
+ `;
  $('#switchBranch').onclick=()=>{sessionStorage.removeItem('ac_branch_pin');renderBranchPicker()};
  $('#entryDay').onchange=()=>{fillDay();renderPeriod()};
  $('#saveDay').onclick=saveBranchDay;$('#printContract').onclick=printContractSheet;
  loadBranchDays();
 }
 let branchDays=[],closedPeriods=[];
-async function loadBranchDays(){try{const pin=sessionStorage.getItem('ac_branch_pin');const d=await rpc('ac_get_days',{p_branch:branch.id,p_pin:pin});branchDays=d.days||[];closedPeriods=d.closed||[];fillDay();renderPeriod();$('#history').innerHTML=branchDays.map(r=>`<tr><td>${esc(r.day)}</td><td>${Number(r.v?.contracts_count)||0}</td><td>${Number(r.v?.sales_count)||0}</td><td><b>${total(r.v)}</b></td></tr>`).join('')||'<tr><td colspan="2">لا توجد بيانات مسجلة حتى الآن</td></tr>'}catch(e){showError('#saveError',e);if(e.message.includes('الرقم السري')){sessionStorage.removeItem('ac_branch_pin');renderBranchPicker(e.message)}}}
+async function loadBranchDays(){try{const pin=sessionStorage.getItem('ac_branch_pin');const d=await rpc('ac_get_days',{p_branch:branch.id,p_pin:pin});branchDays=d.days||[];closedPeriods=d.closed||[];fillDay();renderPeriod();}catch(e){showError('#saveError',e);if(e.message.includes('الرقم السري')){sessionStorage.removeItem('ac_branch_pin');renderBranchPicker(e.message)}}}
 function fillDay(){const d=branchDays.find(x=>x.day===$('#entryDay').value);renderFields(d?.v||{});$('#saveMessage').textContent=d?'توجد بيانات محفوظة لهذا اليوم ويمكن تعديلها':''}
 
 function periodBounds(monthValue,half){const [y,m]=monthValue.split('-').map(Number),start=half==='first'?1:16,end=half==='first'?15:30;return {start:new Date(y,m-1,start),end:new Date(y,m-1,end),from:y+'-'+String(m).padStart(2,'0')+'-'+String(start).padStart(2,'0'),to:y+'-'+String(m).padStart(2,'0')+'-'+String(end).padStart(2,'0')}}
