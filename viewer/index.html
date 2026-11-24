@@ -53,7 +53,7 @@ th{background:#fff1e2}
 .branch-card .branch-arrow{font-size:19px;color:var(--orange);margin-right:5px}
 
 </style></head><body>
-<header><div class="brand">متابعة مستر عبدالرحمن</div><div class="sub">لوحة تقارير الفروع · صلاحية مشاهدة فقط</div></header>
+<header><div class="brand">متابعة مستر عبدالرحمن</div><div class="sub">لوحة تقارير الفروع</div></header>
 <main id="app"><section class="card">جاري التحميل...</section></main>
 <script>
 const SUPABASE_URL='https://fjhjqrgolqqtaokrlezd.supabase.co';
@@ -65,7 +65,7 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Cairo',year:'n
 const total=v=>TYPES.reduce((s,[k])=>s+(Number(v?.[k])||0),0);
 const empty=()=>Object.fromEntries(TYPES.map(([k])=>[k,0]));
 const sumExtra=(rows,k)=>rows.reduce((s,r)=>s+(Number(r.v?.[k])||0),0);
-let viewerPassword=sessionStorage.getItem('ac_viewer_password')||'',viewerData=null,selectedBranchId='';
+let viewerPassword=sessionStorage.getItem('ac_viewer_password')||'',viewerData=null,selectedBranchId='',detailDay='';
 async function rpc(name,args={}){const res=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(args)});const data=await res.json().catch(()=>null);if(!res.ok)throw new Error(data?.message||data?.details||'تعذر الاتصال بالخدمة');if(data&&data.ok===false)throw new Error(({wrong:'كلمة المرور غير صحيحة أو تم إيقاف المحاولة مؤقتًا',weak_password:'كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف',bad_range:'الفترة المحددة غير صحيحة'})[data.error]||data.error||'حدث خطأ');return data}
 function loginScreen(message=''){viewerPassword='';sessionStorage.removeItem('ac_viewer_password');app.innerHTML=`<section class="card"><h2>تسجيل دخول مستر عبدالرحمن</h2><p class="muted">أدخل كلمة المرور لعرض تقارير الفروع السبعة.</p><div class="field"><label>كلمة المرور</label><input id="loginPassword" type="password" autocomplete="current-password"></div><button id="loginBtn">دخول لوحة المتابعة</button><div class="error" id="loginError">${esc(message)}</div></section>`;$('#loginBtn').onclick=login;$('#loginPassword').onkeydown=e=>{if(e.key==='Enter')login()}}
 async function login(){const p=$('#loginPassword').value,b=$('#loginBtn');b.disabled=true;try{await rpc('ac_viewer_check',{p_password:p});viewerPassword=p;sessionStorage.setItem('ac_viewer_password',p);renderApp()}catch(e){$('#loginError').textContent=e.message}finally{b.disabled=false}}
@@ -84,11 +84,28 @@ function drawReport(data,from,to){
  todayEntries.forEach(r=>{if(byId[r.branch_id])byId[r.branch_id].submittedToday=true});
  const all=Object.values(byId),selected=byId[selectedBranchId];
  const branchCards=all.map(b=>`<div class="branch-card ${selectedBranchId===b.id?'selected':''}" role="button" tabindex="0" data-branch="${esc(b.id)}"><div><h3>${esc(b.name)}</h3></div><div><span class="branch-status ${b.submittedToday?'ok':'no'}">${b.submittedToday?'سجّل اليوم ✓':'لم يسجّل اليوم'}</span><span class="branch-arrow">‹</span></div></div>`).join('');
- const selectedDays=(selected?.days||[]).slice().sort((a,b)=>b.day.localeCompare(a.day));
- const contracts=sumExtra(selectedDays,'contracts_count'),sales=sumExtra(selectedDays,'sales_count');
- const detail=selected?`<section class="card"><div class="section-title"><div><h3>${esc(selected.name)}</h3><div class="muted">تفاصيل الفترة المحددة</div></div><span class="pill ok">مشاهدة فقط</span></div><div class="grid"><div class="metric"><strong>${contracts}</strong><span>عدد العقود</span></div><div class="metric"><strong>${sales}</strong><span>عدد المبيعات</span></div></div><div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>التاريخ</th><th>عدد العقود</th><th>عدد المبيعات</th></tr></thead><tbody>${selectedDays.map(r=>`<tr><td>${esc(r.day)}</td><td>${Number(r.v?.contracts_count)||0}</td><td>${Number(r.v?.sales_count)||0}</td></tr>`).join('')||'<tr><td colspan="3">لا توجد بيانات في الفترة</td></tr>'}</tbody></table></div></section>`:'';
- $('#report').innerHTML=`<section class="card"><h3>الفروع وحالة التسجيل اليوم</h3><p class="muted">كل الفروع تحت بعض. اضغط على اسم الفرع لعرض عدد المبيعات وعدد العقود فقط.</p><div class="branch-grid">${branchCards}</div></section>${detail}`;
- document.querySelectorAll('[data-branch]').forEach(btn=>{const open=()=>{selectedBranchId=btn.dataset.branch;drawReport(data,from,to);document.querySelector('#report section:nth-of-type(2)')?.scrollIntoView({behavior:'smooth',block:'start'})};btn.onclick=open;btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}});
+ let detail='';
+ if(selected){
+  const ordered=selected.days.slice().sort((a,b)=>b.day.localeCompare(a.day));
+  const dayValue=ordered.find(r=>r.day===detailDay)?.v||{};
+  const [yy,mm,dd]=(detailDay||today()).split('-').map(Number);
+  const halfStart=dd<=15?1:16,halfEnd=dd<=15?15:new Date(yy,mm,0).getDate();
+  const pFrom=`${yy}-${String(mm).padStart(2,'0')}-${String(halfStart).padStart(2,'0')}`,pTo=`${yy}-${String(mm).padStart(2,'0')}-${String(halfEnd).padStart(2,'0')}`;
+  const periodRows=ordered.filter(r=>r.day>=pFrom&&r.day<=pTo);
+  const sum=(key,rows)=>rows.reduce((n,r)=>n+(Number(r.v?.[key])||0),0);
+  const periodValues=TYPES.map(([k,label])=>`<tr><td>${esc(label)}</td><td>${sum(k,periodRows)}</td></tr>`).join('');
+  const dayValues=TYPES.map(([k,label])=>`<tr><td>${esc(label)}</td><td>${Number(dayValue[k])||0}</td></tr>`).join('');
+  detail=`<section class="card"><div class="section-title"><div><h3>${esc(selected.name)}</h3><div class="muted">تفاصيل التسجيل اليومي والفترة</div></div></div>
+   <div class="field"><label for="detailDay">تاريخ اليوم</label><input id="detailDay" type="date" value="${esc(detailDay||today())}" min="${esc(from)}" max="${esc(to)}"></div>
+   <h3 style="margin-top:16px">بيانات اليوم</h3><div class="grid"><div class="metric"><strong>${Number(dayValue.sales_count)||0}</strong><span>عدد المبيعات</span></div><div class="metric"><strong>${Number(dayValue.contracts_count)||0}</strong><span>عدد العقود</span></div></div>
+   <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>كل بند</th><th>عدد اليوم</th></tr></thead><tbody>${dayValues}<tr><th>إجمالي الأنواع</th><th>${TYPES.reduce((n,[k])=>n+(Number(dayValue[k])||0),0)}</th></tr></tbody></table></div>
+   <h3 style="margin-top:20px">إجمالي الفترة ${halfStart}–${halfEnd}</h3><div class="grid"><div class="metric"><strong>${sum('sales_count',periodRows)}</strong><span>إجمالي المبيعات</span></div><div class="metric"><strong>${sum('contracts_count',periodRows)}</strong><span>إجمالي العقود</span></div></div>
+   <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>كل بند</th><th>إجمالي الفترة</th></tr></thead><tbody>${periodValues}<tr><th>إجمالي الأنواع</th><th>${TYPES.reduce((n,[k])=>n+sum(k,periodRows),0)}</th></tr></tbody></table></div>
+   <h3 style="margin-top:20px">سجل الأيام والعقود</h3><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>عدد المبيعات</th><th>عدد العقود</th></tr></thead><tbody>${ordered.map(r=>`<tr><td>${esc(r.day)}</td><td>${Number(r.v?.sales_count)||0}</td><td>${Number(r.v?.contracts_count)||0}</td></tr>`).join('')||'<tr><td colspan="3">لا توجد بيانات مسجلة</td></tr>'}</tbody></table></div></section>`;
+ }
+ $('#report').innerHTML=`<section class="card"><h3>الفروع وحالة التسجيل اليوم</h3><p class="muted">الفروع مرتبة تحت بعضها. اضغط على الفرع لعرض اليوم والفترة وكل البنود والعقود.</p><div class="branch-grid">${branchCards}</div></section>${detail}`;
+ document.querySelectorAll('[data-branch]').forEach(btn=>{const open=()=>{selectedBranchId=btn.dataset.branch;const chosen=byId[selectedBranchId];detailDay=chosen?.days?.slice().sort((a,b)=>b.day.localeCompare(a.day))[0]?.day||today();drawReport(data,from,to);document.querySelector('#report section:nth-of-type(2)')?.scrollIntoView({behavior:'smooth',block:'start'})};btn.onclick=open;btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}});
+ const dayInput=document.querySelector('#detailDay');if(dayInput)dayInput.onchange=()=>{detailDay=dayInput.value;drawReport(data,from,to)};
 }
 async function boot(){if(!viewerPassword)return loginScreen();try{await rpc('ac_viewer_check',{p_password:viewerPassword});renderApp()}catch(e){loginScreen(e.message)}}
 boot();
