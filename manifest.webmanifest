@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "مبيعات الفروع اليومية",
+  "short_name": "مبيعات الفروع",
+  "description": "تسجيل ومتابعة المبيعات اليومية للفرع",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffaf5",
+  "theme_color": "#d85f00",
+  "icons": [
+    { "src": "/icons/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
