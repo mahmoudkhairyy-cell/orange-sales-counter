@@ -67,6 +67,17 @@ input,select{border-radius:12px}
  .paper-sign span{display:inline-block;width:32mm;border-bottom:1px dotted #555;margin-left:4mm}
 }
 
+
+.branch-lock{font-size:11px;font-weight:800;color:#176b48;background:#e9f7ef;border:1px solid #cdebd9;padding:8px 11px;border-radius:999px;white-space:nowrap}
+.card h2{letter-spacing:-.35px}
+#entryDay{min-height:48px;font-weight:700}
+#fields{margin-top:14px}
+#fields input,#fields select{min-height:44px}
+#saveDay{background:linear-gradient(110deg,#c95400,#f47a00);box-shadow:0 7px 18px #e96e0026}
+#printContract{border:1px solid #f2c99e;background:#fff7ee;color:#9b4800;font-weight:800}
+#periodValues td{font-weight:700;padding:12px 8px}
+@media(max-width:520px){main{padding:15px 12px 38px}.card{padding:16px;border-radius:17px}.actions{display:grid;grid-template-columns:1fr;gap:9px}.row{gap:9px}}
+
 </style>
 </head>
 <body>
@@ -112,13 +123,12 @@ function readFields(){const v={contracts_count:Math.max(0,Math.min(100000,Math.t
 function calcTotal(){const el=$('#totalNow');if(el)el.textContent=total(readFields())}
 function renderBranch(){
  if(!branch||!sessionStorage.getItem('ac_branch_pin'))return renderBranchPicker();
- const t=today();app.innerHTML=`<section class="card"><div class="row"><div><h2>${esc(branch.name)}</h2></div><button class="tiny secondary" id="switchBranch">تغيير الفرع</button></div></section>
+ const t=today();app.innerHTML=`<section class="card"><div class="row"><div><div class="muted">مساحة تسجيل الفرع</div><h2>${esc(branch.name)}</h2></div><span class="branch-lock">فرع مسجّل الدخول</span></div></section>
  <section class="card"><div class="field"><label for="entryDay">تاريخ التسجيل</label><input id="entryDay" type="date" value="${t}" min="${shift(t,-2)}" max="${t}"></div><div id="fields"></div>
  <div class="notice row"><b>إجمالي اليوم</b><strong class="total" id="totalNow">0</strong></div>
  <div class="actions"><button id="saveDay">حفظ البيانات</button><button class="light" id="printContract">طباعة كشف العقود A4</button></div><div class="success" id="saveMessage"></div><div class="error" id="saveError"></div></section>
  <section class="card"><div class="section-title"><h3 id="periodTitle">إجمالي الفترة الحالية</h3></div><div class="table-wrap"><table><thead><tr>${TYPES.map(([,l])=>'<th>'+l+'</th>').join('')}<th>عدد العقود</th><th>عدد المبيعات</th><th>الإجمالي</th></tr></thead><tbody id="periodValues"></tbody></table></div></section>
  `;
- $('#switchBranch').onclick=()=>{sessionStorage.removeItem('ac_branch_pin');renderBranchPicker()};
  $('#entryDay').onchange=()=>{fillDay();renderPeriod()};
  $('#saveDay').onclick=saveBranchDay;$('#printContract').onclick=printContractSheet;
  loadBranchDays();
